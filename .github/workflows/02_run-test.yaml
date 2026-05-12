@@ -6,6 +6,12 @@ on:
             - "**"
     pull_request:
 
+# Define permissions required for publishing test results to UI
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -21,13 +27,23 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            # Added 'github-actions' reporter to generate inline code annotations on failure
             - name: Run tests
               run: |
                   mkdir -p reports
-                  npm test -- --reporter=default --reporter=junit --outputFile.junit=reports/vitest-junit.xml
+                  npm test -- --reporter=default --reporter=github-actions --reporter=junit --outputFile.junit=reports/vitest-junit.xml
+
+            # Parse JUnit XML and display it on the GitHub Actions Summary and Checks tab
+            - name: Publish Test Report
+              uses: mikepenz/action-junit-report@v4
+              if: always() && !env.ACT # Ensure this runs even if the tests fail and skip when running in local ACT environment
+              with:
+                  report_paths: 'reports/vitest-junit.xml'
+                  detailed_summary: true
+                  include_passed: true
 
             - name: Upload test report artifact
-              if: always()
+              if: always() && !env.ACT  # Ensure this runs even if the tests fail and skip when running in local ACT environment
               uses: actions/upload-artifact@v4
               with:
                   name: test-report
