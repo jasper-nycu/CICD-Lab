@@ -36,6 +36,7 @@ npm ci
 ```
 
 **說明：** 這裡使用 `npm ci` (alias: clean-install) 而非 `npm install`，以確保開發環境的一致性：
+
 - **嚴格鎖定版本**：完全依照 `package-lock.json` 安裝精確版本，避免套件意外升級。
 - **環境最乾淨**：會自動清除舊的 `node_modules` 並重新安裝，避免殘留檔案造成不可預期的錯誤。
 
@@ -200,6 +201,7 @@ act push
 ```bash
 docker images
 ```
+
 **觀察重點**： 請注意看 TAG 這一欄！確認它是不是被打上了 feature-a（或者是對應的分支名稱），而不是預設的 latest。
 
 ### 切出 release branch 觀察 ci.yaml 執行結果
@@ -216,6 +218,7 @@ act push
 ```bash
 docker images
 ```
+
 **觀察重點**： 確認這次的 TAG 成功變成了 1.0.0！
 
 ## 思考

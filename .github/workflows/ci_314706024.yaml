@@ -1,6 +1,5 @@
 name: CI/CD Homework
 
-# 滿足要求：pipeline 需要在 push 時自動執行
 on:
   push:
     branches:
@@ -21,27 +20,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      # 滿足要求：Prettier check (package.json)
       - name: Run Prettier check
         run: npm run format:check
 
-      # 滿足要求：TypeScript typecheck (package.json)
       - name: Run TypeScript typecheck
         run: npm run typecheck
 
-      # 滿足要求：Test 並輸出 JUnit 報告以供 UI 顯示
       - name: Run tests
         run: |
           mkdir -p reports
           npm test -- --reporter=default --reporter=github-actions --reporter=junit --outputFile.junit=reports/vitest-junit.xml
 
-      # 滿足要求：將測試結果顯示於 GitHub actions 結果頁面
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: always() && !env.ACT
